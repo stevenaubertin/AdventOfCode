@@ -1,47 +1,29 @@
 ﻿open X0R.F.Files
+open X0R.F.Seq
 
 let part1 filepath =
-    filepath
-    |> Files.readLines 
+    Files.readLines filepath
     |> Seq.map int
     |> Seq.sum
     |> printfn "%A"
 
 let part2 filepath =
-    // This cycle function was taken from : http://www.fssnip.net/a5/title/Generate-a-repeating-infinite-sequence-
-    let rec cycle xs =
-        seq { yield! xs; yield! cycle xs }
-    
-    let mutable seen = [0]
+    let computeRecurringFrequency xs =
+        let rec implementation acc rest mem =
+            let freq = acc + (List.last mem)
+            match List.tryFind (fun x -> x = freq) mem with
+            | Some x -> x
+            | None -> match rest with
+                      | [] -> implementation (List.head xs) (List.tail xs) (List.append mem [freq])
+                      | _ -> implementation (List.head rest) (List.tail rest) (List.append mem [freq])
+        match xs with
+        | [] -> None
+        | _ -> Some (implementation (List.head xs) (List.tail xs) [0])
 
-    filepath
-    |> Files.readLines 
-    |> Seq.map int
-    |> Seq.cache
-    |> cycle
-    |> Seq.takeWhile (fun x -> Seq.fin)
-    |> printfn "%A"
-
-let tmp argv = 
-
-    let computeFrequence values =
-        let rec computeImplementation current mem rest =
-            let newmem = Seq.append mem [current] |> Seq.toList
-            let count = newmem
-                        |> Seq.filter (fun x -> current = x)
-                        |> Seq.length
-            match count with
-            | 2 -> current
-            | _ -> match rest with
-                   | [] -> current
-                   | head::tail -> computeImplementation (current + head) newmem tail
-        computeImplementation 0 [] values
-    
-    Seq.last argv
-    |> Files.readLines 
-    |> Seq.map int
+    Files.readLines filepath 
     |> Seq.toList
-    |> computeFrequence
+    |> List.map int
+    |> computeRecurringFrequency
     |> printfn "%A"
 
 [<EntryPoint>]

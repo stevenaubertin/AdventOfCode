@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\X0R.F.Files\X0R.F.Files.fsproj" />
+    <ProjectReference Include="..\X0R.Seq\X0R.F.Seq.fsproj" />
   </ItemGroup>
 
 </Project>
