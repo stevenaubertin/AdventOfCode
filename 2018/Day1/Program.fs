@@ -15,7 +15,7 @@ let part2 filepath =
             | Some x -> x
             | None -> match rest with
                       | [] -> implementation (List.head xs) (List.tail xs) (List.append mem [freq])
-                      | _ -> implementation (List.head rest) (List.tail rest) (List.append mem [freq])
+                      | head::tail -> implementation head tail (List.append mem [freq])
         match xs with
         | [] -> None
         | _ -> Some (implementation (List.head xs) (List.tail xs) [0])
